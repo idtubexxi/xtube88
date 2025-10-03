@@ -1,5 +1,1 @@
-scrolling="no"
-    allowfullscreen
-    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-    loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
+https://how.dev/answers/how-to-fix-storage-link-not-working-issue-in-laravel
