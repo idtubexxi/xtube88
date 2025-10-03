@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+}
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 active:scale-95 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 dark:bg-primary-500 dark:hover:bg-primary-600;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 active:scale-95 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition duration-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 dark:bg-gray-800 dark:shadow-gray-900/30;
+  }
+
+  .sidebar-link {
+    @apply flex items-center px-6 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition duration-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400;
+  }
+
+  .sidebar-link-active {
+    @apply bg-primary-50 text-primary-600 border-r-4 border-primary-600 dark:bg-gray-700 dark:text-primary-400 dark:border-primary-500;
+  }
+
+  .video-embed-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  .video-embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}
+@layer base {
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+    width: 0px;
+    background: transparent;
+  }
+
+  ::-moz-scrollbar {
+    display: none;
+    width: 0px;
+    background: transparent;
+  }
+}

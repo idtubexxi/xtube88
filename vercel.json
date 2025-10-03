@@ -1,0 +1,75 @@
+{
+  "version": 2,
+  "framework": null,
+  "functions": {
+    "api/index.php": { "runtime": "vercel-php@0.7.4" }
+  },
+
+  "routes": [
+    {
+      "src": "/build/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "dest": "/public/build/$1"
+    },
+    {
+      "src": "/storage/(.*)",
+      "dest": "/public/storage/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ],
+  "env": {
+    "APP_NAME": "XTube",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_URL": "https://xtubes88.vercel.app",
+    "APP_KEY": "base64:HuhQLR/FvaPh/EPsCx4L/8tMG52giwojyUs8WujTl4E=",
+    "ASSET_URL": "https://xtubes88.vercel.app",
+    "APP_MAINTENANCE_DRIVER": "file",
+    "PHP_CLI_SERVER_WORKERS": "4",
+    "BCRYPT_ROUNDS": "12",
+    "APP_STORAGE": "/tmp/storage",
+    "APP_CONFIG_CACHE": "/tmp/config.php",
+    "APP_EVENTS_CACHE": "/tmp/events.php",
+    "APP_PACKAGES_CACHE": "/tmp/packages.php",
+    "APP_ROUTES_CACHE": "/tmp/routes.php",
+    "APP_SERVICES_CACHE": "/tmp/services.php",
+    "VIEW_COMPILED_PATH": "/tmp",
+    "CACHE_DRIVER": "array",
+    "LOG_CHANNEL": "stderr",
+    "LOG_STACK": "stderr",
+    "SESSION_DRIVER": "database",
+    "SESSION_LIFETIME": "120",
+    "SESSION_ENCRYPT": "false",
+    "SESSION_CONNECTION": "pgsql",
+    "SESSION_TABLE": "sessions",
+    "SESSION_COOKIE": "xtube_session",
+    "SESSION_PATH": "/",
+    "SESSION_SECURE_COOKIE": "false",
+    "SESSION_HTTP_ONLY": "true",
+    "SESSION_SAME_SITE": "lax",
+    "QUEUE_CONNECTION": "database",
+    "QUEUE_TABLE": "jobs",
+    "QUEUE_FAILED_TABLE": "failed_jobs",
+    "MAIL_MAILER": "smtp",
+    "MAIL_HOST": "smtp.gmail.com",
+    "MAIL_PORT": "587",
+    "MAIL_USERNAME": "id.tubexxi@gmail.com",
+    "MAIL_PASSWORD": "lsuplgvrihuiecwg",
+    "MAIL_ENCRYPTION": "tls",
+    "MAIL_FROM_ADDRESS": "support@xtube.com",
+    "MAIL_FROM_NAME": "XTube",
+    "DB_CONNECTION": "pgsql",
+    "DB_HOST": "db.prisma.io",
+    "DB_PORT": "5432",
+    "DB_DATABASE": "postgres",
+    "DB_USERNAME": "f2371dc5983395c54215451b45f0b9b09117cc2abfd6367376831729c17f99af",
+    "DB_PASSWORD": "sk_t7bcapvo544KXIlBAQRCI",
+    "DB_SSLMODE": "require",
+    "DB_URL": "postgres://f2371dc5983395c54215451b45f0b9b09117cc2abfd6367376831729c17f99af:sk_t7bcapvo544KXIlBAQRCI@db.prisma.io:5432/postgres?sslmode=require"
+  }
+}
