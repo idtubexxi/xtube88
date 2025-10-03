@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 // Frontend Routes
@@ -87,3 +88,8 @@ Route::middleware('auth')->group(function () {
   Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
 });
 Route::post('/videos/{slug}/like', [HomeController::class, 'like'])->name('videos.like');
+
+
+Route::get('/linkstorage', function () {
+  Artisan::call('storage:link');
+});
