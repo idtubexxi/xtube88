@@ -1,6 +1,12 @@
 FROM dunglas/frankenphp:latest
 
-# Install PHP extensions yang dibutuhkan Laravel
+# Install tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
 RUN install-php-extensions \
     pdo_mysql \
     pdo_pgsql \
@@ -14,30 +20,29 @@ RUN install-php-extensions \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /app
 
-# Copy composer files first (for better caching)
+# Copy composer files first
 COPY composer.json composer.lock ./
+
+# Copy safe environment file untuk build
+COPY .env.docker .env
+
+# Install dependencies WITHOUT running scripts that need database
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Copy application files
+# Copy application
 COPY . .
-COPY --chown=www-data:www-data . /app
-
-# Run composer scripts
-RUN composer run-script post-install-cmd
 
 # Set permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 RUN chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Generate key (tapi better di environment variable)
-# RUN php artisan key:generate --force
+# Run ONLY safe artisan commands
+RUN php artisan package:discover --no-interaction --quiet
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:80/up || exit 1
+# Create simple test file
+RUN echo "<?php echo 'OK'; ?>" > /app/public/health.php
 
 EXPOSE 80
 

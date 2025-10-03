@@ -64,8 +64,8 @@
       "@php artisan test"
     ],
     "post-install-cmd": [
-      "php artisan optimize:clear",
-      "php artisan storage:link"
+      "Illuminate\\Foundation\\ComposerScripts::postInstall",
+      "@php artisan optimize:clear --no-interaction --quiet"
     ]
   },
   "extra": {

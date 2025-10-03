@@ -15,7 +15,7 @@ services:
       - ./bootstrap/cache:/app/bootstrap/cache
       - /etc/letsencrypt:/etc/letsencrypt:ro
     env_file:
-      - .env
+      - .env.docker
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/up"]
       interval: 30s
