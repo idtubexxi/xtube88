@@ -11,15 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
     health: '/up',
   )
   ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->trustProxies(
-      at: env('TRUSTED_PROXIES', '*')
-    );
+    // $middleware->trustProxies(
+    //   at: env('TRUSTED_PROXIES', '*')
+    // );
     $middleware->alias([
       'admin' => \App\Http\Middleware\IsAdmin::class,
     ]);
-    $middleware->append([
-      \Illuminate\Http\Middleware\TrustProxies::class,
-    ]);
+    // $middleware->append([
+    //   \Illuminate\Http\Middleware\TrustProxies::class,
+    // ]);
   })
   ->withExceptions(function (Exceptions $exceptions): void {
     //
