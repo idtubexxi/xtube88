@@ -1,0 +1,37 @@
+{
+    # Global options
+    auto_https off
+    admin off
+}
+
+:80 {
+    # Set root directory
+    root * /app/public
+
+    # Enable PHP processing
+    php_server
+
+    # Enable file server
+    file_server
+
+    # Logging
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+
+    # Handle Laravel routes
+    try_files {path} {path}/ /index.php?{query}
+
+    # Encode responses
+    encode gzip
+
+    # Security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}

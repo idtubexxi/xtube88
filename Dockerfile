@@ -1,9 +1,16 @@
-FROM dunglas/frankenphp:latest
+FROM dunglas/frankenphp:latest-php8.3
 
-# Install tools
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     procps \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -15,35 +22,50 @@ RUN install-php-extensions \
     intl \
     zip \
     opcache \
-    redis
+    redis \
+    exif
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /app
 
-# Copy composer files first
+# Copy composer files
 COPY composer.json composer.lock ./
 
-# Copy safe environment file untuk build
-COPY .env.docker .env
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
-# Install dependencies WITHOUT running scripts that need database
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Copy application
+# Copy application files
 COPY . .
 
-# Set permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-RUN chmod -R 775 /app/storage /app/bootstrap/cache
+# Copy environment file
+COPY .env.docker .env
 
-# Run ONLY safe artisan commands
-RUN php artisan package:discover --no-interaction --quiet
+# Set proper permissions
+RUN chown -R www-data:www-data /app \
+    && chmod -R 755 /app \
+    && chmod -R 775 /app/storage \
+    && chmod -R 775 /app/bootstrap/cache
 
-# Create simple test file
+# Create public/storage link if doesn't exist
+RUN php artisan storage:link || true
+
+# Run optimization commands
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Create health check endpoint
 RUN echo "<?php echo 'OK'; ?>" > /app/public/health.php
 
-EXPOSE 80
+# Expose port
+EXPOSE 80 443
 
-CMD ["frankenphp", "run"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+    CMD curl -f http://localhost/health.php || exit 1
+
+# Start FrankenPHP
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

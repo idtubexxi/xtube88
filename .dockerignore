@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+README.md
+LICENSE
+docs/
+
+# Tests
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build files
+.env.example
+.env.testing
+.editorconfig
+.styleci.yml
+
+# Storage (will be mounted as volume)
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+!storage/app/.gitignore
+!storage/app/public/.gitignore
+!storage/framework/.gitignore
+!storage/logs/.gitignore
+
+# Bootstrap cache (will be mounted as volume)
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+# Docker files
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Scripts
+setup.sh
+deploy.sh
+TROUBLESHOOTING.md
+DEPLOYMENT.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+*.cache

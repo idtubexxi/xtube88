@@ -5,20 +5,42 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - PHP_VERSION=8.3
     container_name: stream-xtube-app
     restart: unless-stopped
     ports:
       - "127.0.0.1:8000:80"
     volumes:
-      - .:/app
+      # Mount only necessary directories
       - ./storage:/app/storage
       - ./bootstrap/cache:/app/bootstrap/cache
+      - ./public/storage:/app/public/storage
+      # Mount SSL certificates (read-only)
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Mount Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_CHANNEL=stdout
+      - DB_CONNECTION=pgsql
     env_file:
       - .env.docker
+    networks:
+      - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/up"]
+      test: ["CMD", "curl", "-f", "http://localhost/health.php"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  app-network:
+    driver: bridge
