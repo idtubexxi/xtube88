@@ -2,17 +2,14 @@
     # Global options
     auto_https off
     admin off
+
+    # Order directive for FrankenPHP
+    order php_server before file_server
 }
 
 :80 {
     # Set root directory
     root * /app/public
-
-    # Enable PHP processing
-    php_server
-
-    # Enable file server
-    file_server
 
     # Logging
     log {
@@ -20,9 +17,6 @@
         format console
         level INFO
     }
-
-    # Handle Laravel routes
-    try_files {path} {path}/ /index.php?{query}
 
     # Encode responses
     encode gzip
@@ -34,4 +28,7 @@
         X-XSS-Protection "1; mode=block"
         Referrer-Policy "strict-origin-when-cross-origin"
     }
+
+    # PHP + Laravel handling
+    php_server
 }

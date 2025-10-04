@@ -1,0 +1,79 @@
+services:
+# Web Service (Laravel)
+- type: web
+  name: stream-xtube
+  env: docker
+  region: singapore
+  plan: starter # $7/month atau free
+  dockerfilePath: ./Dockerfile.render
+  envVars:
+  - key: APP_NAME
+    value: XTube
+  - key: APP_ENV
+    value: production
+  - key: APP_KEY
+    generateValue: true
+  - key: APP_DEBUG
+    value: false
+  - key: APP_URL
+    value: https://stream-xtube.onrender.com
+  - key: LOG_CHANNEL
+    value: stderr
+  - key: LOG_LEVEL
+    value: error
+  - key: DB_CONNECTION
+    value: pgsql
+  - key: DB_HOST
+    fromDatabase:
+      name: stream-xtube-db
+      property: host
+  - key: DB_PORT
+    fromDatabase:
+      name: stream-xtube-db
+      property: port
+  - key: DB_DATABASE
+    fromDatabase:
+      name: stream-xtube-db
+      property: database
+  - key: DB_USERNAME
+    fromDatabase:
+      name: stream-xtube-db
+      property: user
+  - key: DB_PASSWORD
+    fromDatabase:
+      name: stream-xtube-db
+      property: password
+  - key: CACHE_STORE
+    value: redis
+  - key: SESSION_DRIVER
+    value: redis
+  - key: QUEUE_CONNECTION
+    value: redis
+  - key: REDIS_HOST
+    fromService:
+      type: redis
+      name: stream-xtube-redis
+      property: host
+  - key: REDIS_PORT
+    fromService:
+      type: redis
+      name: stream-xtube-redis
+      property: port
+  disk:
+    name: storage
+    mountPath: /app/storage
+    sizeGB: 10
+
+# Redis Service
+- type: redis
+  name: stream-xtube-redis
+  plan: starter # Free
+  maxmemoryPolicy: allkeys-lru
+  ipAllowList: []
+
+# Database (PostgreSQL)
+databases:
+- name: stream-xtube-db
+  plan: starter # Free PostgreSQL
+  databaseName: stream_xtube
+  user: streamxtube

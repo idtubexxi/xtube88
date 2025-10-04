@@ -24,7 +24,7 @@ sudo sh get-docker.sh
 sudo usermod -aG docker $USER
 
 # Install Docker Compose (if not included)
-sudo apt install docker-compose-plugin -y
+sudo apt install docker compose-plugin -y
 
 # Verify installation
 docker --version
@@ -106,28 +106,28 @@ chmod +x deploy.sh
 
 ```bash
 # 1. Stop existing containers
-docker-compose down
+docker compose down
 
 # 2. Build image
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # 3. Start containers
-docker-compose up -d
+docker compose up -d
 
 # 4. Run migrations
-docker-compose exec app php artisan migrate --force
+docker compose exec app php artisan migrate --force
 
 # 5. Create storage link
-docker-compose exec app php artisan storage:link
+docker compose exec app php artisan storage:link
 
 # 6. Cache configuration
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
-docker-compose exec app php artisan view:cache
+docker compose exec app php artisan config:cache
+docker compose exec app php artisan route:cache
+docker compose exec app php artisan view:cache
 
 # 7. Set permissions
-docker-compose exec app chown -R www-data:www-data /app/storage /app/bootstrap/cache
-docker-compose exec app chmod -R 775 /app/storage /app/bootstrap/cache
+docker compose exec app chown -R www-data:www-data /app/storage /app/bootstrap/cache
+docker compose exec app chmod -R 775 /app/storage /app/bootstrap/cache
 ```
 
 ## ✅ Verification
@@ -136,13 +136,13 @@ docker-compose exec app chmod -R 775 /app/storage /app/bootstrap/cache
 
 ```bash
 docker ps
-docker-compose ps
+docker compose ps
 ```
 
 ### 2. Check Logs
 
 ```bash
-docker-compose logs -f app
+docker compose logs -f app
 ```
 
 ### 3. Test Endpoints
@@ -161,13 +161,13 @@ curl https://stream.xtubes.site
 ### 4. Check Database Connection
 
 ```bash
-docker-compose exec app php artisan db:show
+docker compose exec app php artisan db:show
 ```
 
 ### 5. Check Storage Link
 
 ```bash
-docker-compose exec app ls -la /app/public/storage
+docker compose exec app ls -la /app/public/storage
 ```
 
 ## 🔄 Updates & Maintenance
@@ -186,10 +186,10 @@ git pull origin main
 
 ```bash
 # Application logs
-docker-compose logs -f app
+docker compose logs -f app
 
 # Last 100 lines
-docker-compose logs --tail=100 app
+docker compose logs --tail=100 app
 
 # Nginx logs
 sudo tail -f /var/log/nginx/xtube-access.log
@@ -200,39 +200,39 @@ sudo tail -f /var/log/nginx/xtube-error.log
 
 ```bash
 # Restart Docker container
-docker-compose restart app
+docker compose restart app
 
 # Restart Nginx
 sudo systemctl restart nginx
 
 # Full restart
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ### Clear Cache
 
 ```bash
-docker-compose exec app php artisan cache:clear
-docker-compose exec app php artisan config:clear
-docker-compose exec app php artisan view:clear
-docker-compose exec app php artisan route:clear
+docker compose exec app php artisan cache:clear
+docker compose exec app php artisan config:clear
+docker compose exec app php artisan view:clear
+docker compose exec app php artisan route:clear
 ```
 
 ### Database Management
 
 ```bash
 # Run migrations
-docker-compose exec app php artisan migrate
+docker compose exec app php artisan migrate
 
 # Rollback
-docker-compose exec app php artisan migrate:rollback
+docker compose exec app php artisan migrate:rollback
 
 # Fresh migration (⚠️ Deletes all data!)
-docker-compose exec app php artisan migrate:fresh
+docker compose exec app php artisan migrate:fresh
 
 # Seed database
-docker-compose exec app php artisan db:seed
+docker compose exec app php artisan db:seed
 ```
 
 ## 🛠️ Common Tasks
@@ -240,32 +240,32 @@ docker-compose exec app php artisan db:seed
 ### Enter Container Shell
 
 ```bash
-docker-compose exec app bash
+docker compose exec app bash
 ```
 
 ### Run Artisan Commands
 
 ```bash
-docker-compose exec app php artisan [command]
+docker compose exec app php artisan [command]
 ```
 
 ### Run Composer
 
 ```bash
-docker-compose exec app composer install
-docker-compose exec app composer update
+docker compose exec app composer install
+docker compose exec app composer update
 ```
 
 ### Run Tinker
 
 ```bash
-docker-compose exec app php artisan tinker
+docker compose exec app php artisan tinker
 ```
 
 ### Check PHP Info
 
 ```bash
-docker-compose exec app php -i
+docker compose exec app php -i
 ```
 
 ## 📊 Monitoring
@@ -288,7 +288,7 @@ df -h
 watch -n 5 'curl -s -o /dev/null -w "%{http_code}" http://localhost:8000'
 
 # Monitor logs
-docker-compose logs -f app | grep -i error
+docker compose logs -f app | grep -i error
 ```
 
 ## 🔒 Security
@@ -301,7 +301,7 @@ chmod -R 775 storage bootstrap/cache
 chown -R $USER:$USER storage bootstrap/cache
 
 # In container
-docker-compose exec app chown -R www-data:www-data /app/storage /app/bootstrap/cache
+docker compose exec app chown -R www-data:www-data /app/storage /app/bootstrap/cache
 ```
 
 ### Firewall Configuration
@@ -331,7 +331,7 @@ sudo certbot renew --dry-run
 
 ```bash
 # Stop containers
-docker-compose down -v
+docker compose down -v
 
 # Remove all data
 rm -rf storage/framework/cache/*
@@ -339,18 +339,18 @@ rm -rf storage/framework/sessions/*
 rm -rf storage/framework/views/*
 
 # Rebuild
-docker-compose build --no-cache
-docker-compose up -d
+docker compose build --no-cache
+docker compose up -d
 
 # Recreate database
-docker-compose exec app php artisan migrate:fresh --seed
+docker compose exec app php artisan migrate:fresh --seed
 ```
 
 ### Rollback to Previous Version
 
 ```bash
 # Stop containers
-docker-compose down
+docker compose down
 
 # Checkout previous version
 git checkout [previous-commit-hash]
@@ -364,30 +364,30 @@ git checkout [previous-commit-hash]
 ### Enable Caching
 
 ```bash
-docker-compose exec app php artisan optimize
+docker compose exec app php artisan optimize
 ```
 
 ### Queue Workers (if using queues)
 
 ```bash
 # Start queue worker
-docker-compose exec app php artisan queue:work --daemon
+docker compose exec app php artisan queue:work --daemon
 ```
 
 ### Schedule Tasks
 
 ```bash
 # Add to host crontab
-* * * * * docker-compose -f /var/www/stream-xtube/docker-compose.yml exec -T app php artisan schedule:run >> /dev/null 2>&1
+* * * * * docker compose -f /var/www/stream-xtube/docker compose.yml exec -T app php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ## 📞 Support
 
 If you encounter issues:
 
-1. Check logs: `docker-compose logs -f app`
-2. Verify configuration: `docker-compose exec app php artisan config:show`
-3. Test database: `docker-compose exec app php artisan db:show`
+1. Check logs: `docker compose logs -f app`
+2. Verify configuration: `docker compose exec app php artisan config:show`
+3. Test database: `docker compose exec app php artisan db:show`
 4. Review troubleshooting guide: `TROUBLESHOOTING.md`
 
 ## 🔗 Useful Links

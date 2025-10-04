@@ -6,32 +6,32 @@
 case "$1" in
     "start")
         echo "🚀 Starting containers..."
-        docker-compose up -d
+        docker compose up -d
         ;;
 
     "stop")
         echo "🛑 Stopping containers..."
-        docker-compose down
+        docker compose down
         ;;
 
     "restart")
         echo "🔄 Restarting containers..."
-        docker-compose restart
+        docker compose restart
         ;;
 
     "logs")
         echo "📋 Showing logs (Ctrl+C to exit)..."
-        docker-compose logs -f app
+        docker compose logs -f app
         ;;
 
     "shell")
         echo "🐚 Entering container shell..."
-        docker-compose exec app bash
+        docker compose exec app bash
         ;;
 
     "migrate")
         echo "📊 Running migrations..."
-        docker-compose exec app php artisan migrate
+        docker compose exec app php artisan migrate
         ;;
 
     "migrate-fresh")
@@ -39,74 +39,74 @@ case "$1" in
         read -p "Are you sure? (y/N) " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            docker-compose exec app php artisan migrate:fresh
+            docker compose exec app php artisan migrate:fresh
         fi
         ;;
 
     "cache-clear")
         echo "🗑️  Clearing all caches..."
-        docker-compose exec app php artisan config:clear
-        docker-compose exec app php artisan cache:clear
-        docker-compose exec app php artisan view:clear
-        docker-compose exec app php artisan route:clear
+        docker compose exec app php artisan config:clear
+        docker compose exec app php artisan cache:clear
+        docker compose exec app php artisan view:clear
+        docker compose exec app php artisan route:clear
         echo "✅ Caches cleared!"
         ;;
 
     "cache")
         echo "💾 Caching configuration..."
-        docker-compose exec app php artisan config:cache
-        docker-compose exec app php artisan route:cache
-        docker-compose exec app php artisan view:cache
+        docker compose exec app php artisan config:cache
+        docker compose exec app php artisan route:cache
+        docker compose exec app php artisan view:cache
         echo "✅ Configuration cached!"
         ;;
 
     "optimize")
         echo "⚡ Optimizing application..."
-        docker-compose exec app php artisan optimize
+        docker compose exec app php artisan optimize
         ;;
 
     "storage-link")
         echo "🔗 Creating storage link..."
-        docker-compose exec app php artisan storage:link
+        docker compose exec app php artisan storage:link
         ;;
 
     "permissions")
         echo "🔒 Fixing permissions..."
-        docker-compose exec app chown -R www-data:www-data /app/storage /app/bootstrap/cache
-        docker-compose exec app chmod -R 775 /app/storage /app/bootstrap/cache
+        docker compose exec app chown -R www-data:www-data /app/storage /app/bootstrap/cache
+        docker compose exec app chmod -R 775 /app/storage /app/bootstrap/cache
         echo "✅ Permissions fixed!"
         ;;
 
     "tinker")
         echo "🔧 Starting Tinker..."
-        docker-compose exec app php artisan tinker
+        docker compose exec app php artisan tinker
         ;;
 
     "test")
         echo "🧪 Running tests..."
-        docker-compose exec app php artisan test
+        docker compose exec app php artisan test
         ;;
 
     "db-show")
         echo "🗄️  Database information..."
-        docker-compose exec app php artisan db:show
+        docker compose exec app php artisan db:show
         ;;
 
     "composer-install")
         echo "📦 Installing composer dependencies..."
-        docker-compose exec app composer install
+        docker compose exec app composer install
         ;;
 
     "composer-update")
         echo "⬆️  Updating composer dependencies..."
-        docker-compose exec app composer update
+        docker compose exec app composer update
         ;;
 
     "rebuild")
         echo "🏗️  Rebuilding container..."
-        docker-compose down
-        docker-compose build --no-cache
-        docker-compose up -d
+        docker compose down
+        docker compose build --no-cache
+        docker compose up -d
         ;;
 
     "stats")
@@ -127,7 +127,7 @@ case "$1" in
     "backup-db")
         echo "💾 Creating database backup..."
         TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        docker-compose exec app php artisan db:backup backup_$TIMESTAMP.sql
+        docker compose exec app php artisan db:backup backup_$TIMESTAMP.sql
         echo "✅ Backup created: backup_$TIMESTAMP.sql"
         ;;
 

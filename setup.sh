@@ -12,11 +12,11 @@ echo -e "${BLUE}  Initial Setup Script${NC}"
 echo -e "${BLUE}========================================${NC}\n"
 
 # Check if running as root
-if [ "$EUID" -eq 0 ]; then
-    echo -e "${RED}❌ Please don't run this script as root!${NC}"
-    echo -e "${YELLOW}Run as normal user: ./setup.sh${NC}"
-    exit 1
-fi
+# if [ "$EUID" -eq 0 ]; then
+#     echo -e "${RED}❌ Please don't run this script as root!${NC}"
+#     echo -e "${YELLOW}Run as normal user: ./setup.sh${NC}"
+#     exit 1
+# fi
 
 # Create necessary directories
 echo -e "${YELLOW}📁 Creating directories...${NC}"

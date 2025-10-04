@@ -1,0 +1,94 @@
+FROM php:8.3-fpm
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    nginx \
+    supervisor \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    pgsql \
+    bcmath \
+    gd \
+    zip \
+    exif \
+    opcache \
+    pcntl
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+# Copy composer files
+COPY composer.json composer.lock ./
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copy application
+COPY . .
+
+# Nginx configuration
+COPY nginx.render.conf /etc/nginx/sites-available/default
+
+# PHP-FPM optimization
+RUN echo "pm = dynamic" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "pm.max_children = 50" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "pm.start_servers = 10" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "pm.min_spare_servers = 5" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "pm.max_spare_servers = 20" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "pm.max_requests = 500" >> /usr/local/etc/php-fpm.d/www.conf
+
+# PHP configuration for production
+RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "upload_max_filesize = 100M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/custom.ini
+
+# Set permissions
+RUN chown -R www-data:www-data /app \
+    && chmod -R 755 /app \
+    && chmod -R 775 /app/storage \
+    && chmod -R 775 /app/bootstrap/cache
+
+# Create storage directories
+RUN mkdir -p /app/storage/app/public \
+    && mkdir -p /app/storage/framework/{cache,sessions,views} \
+    && mkdir -p /app/storage/logs
+
+# Supervisor configuration
+COPY supervisord.render.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+    CMD curl -f http://localhost/up || exit 1
+
+# Startup script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
